@@ -83,7 +83,7 @@ a:hover { color: var(--steel-dk); }
   flex: none;
   font-family: var(--mono);
   font-size: var(--t-xs);
-  letter-spacing: 0.08em;
+  letter-spacing: 0.03em;
   color: var(--steel);
   white-space: nowrap;
 }
@@ -105,12 +105,13 @@ a:hover { color: var(--steel-dk); }
 .mark, .foot-mark {
   display: inline-flex; align-items: center; gap: 0.6rem;
   text-decoration: none; color: var(--ink);
+  min-block-size: 44px;              /* שטח נגיעה, גם ללוגו */
 }
 .mark-name { font-weight: 800; font-size: var(--t-lg); letter-spacing: -0.01em; }
 .mark-rule { inline-size: 1.75rem; block-size: 1px; background: var(--rule); flex: none; }
 .mark-sub {
   font-family: var(--mono); font-size: var(--t-xs);
-  letter-spacing: 0.08em; color: var(--ink-soft); white-space: nowrap;
+  letter-spacing: 0.03em; color: var(--ink-soft); white-space: nowrap;
 }
 
 /* ----------------------------- כפתורים ----------------------------- */
@@ -147,7 +148,7 @@ a:hover { color: var(--steel-dk); }
 }
 .eyebrow {
   font-family: var(--mono); font-size: var(--t-xs);
-  letter-spacing: 0.12em; color: var(--ink-soft);
+  letter-spacing: 0.03em; color: var(--ink-soft);
   margin-block-end: 1.1rem;
 }
 .hero h1 { font-size: var(--t-h1); letter-spacing: -0.03em; }
@@ -164,7 +165,7 @@ a:hover { color: var(--steel-dk); }
 .render-tag {
   display: inline-block;
   font-family: var(--mono); font-size: var(--t-xs);
-  letter-spacing: 0.1em;
+  letter-spacing: 0.03em;
   color: var(--paper); background: var(--ink);
   padding: 0.25rem 0.55rem; border-radius: 2px;
 }
@@ -181,7 +182,7 @@ a:hover { color: var(--steel-dk); }
 
 .sec-label {
   font-family: var(--mono); font-size: var(--t-xs);
-  letter-spacing: 0.14em; color: var(--steel);
+  letter-spacing: 0.03em; color: var(--steel);
   margin-block-end: 1rem;
 }
 .band h2 { font-size: var(--t-h2); max-inline-size: 22ch; }
@@ -255,7 +256,7 @@ a:hover { color: var(--steel-dk); }
 .specs > div:last-child { border-block-end: 0; }
 .specs dt {
   font-family: var(--mono); font-size: var(--t-xs);
-  letter-spacing: 0.1em; color: var(--steel);
+  letter-spacing: 0.03em; color: var(--steel);
 }
 .specs dd { margin: 0; }
 
@@ -273,7 +274,7 @@ a:hover { color: var(--steel-dk); }
 
 .field label {
   font-family: var(--mono); font-size: var(--t-xs);
-  letter-spacing: 0.1em; color: var(--ink-soft);
+  letter-spacing: 0.03em; color: var(--ink-soft);
 }
 .field input, .field select, .field textarea {
   font: inherit; color: var(--ink);
@@ -286,6 +287,8 @@ a:hover { color: var(--steel-dk); }
   transition: border-color .15s ease;
 }
 .field textarea { resize: vertical; line-height: 1.6; }
+/* ספרות וכתובות מייל נקראות LTR, אבל צריכות לשבת בצד ההתחלה של השדה */
+.field input[type="tel"], .field input[type="email"] { direction: ltr; text-align: right; }
 .field select { appearance: none; padding-inline-end: 1.5rem; }
 .field input:hover, .field select:hover, .field textarea:hover { border-block-end-color: var(--ink-soft); }
 .field input:focus, .field select:focus, .field textarea:focus {
@@ -320,6 +323,11 @@ a:hover { color: var(--steel-dk); }
   display: grid; gap: 1.1rem;
 }
 .foot-lines { color: var(--ink-soft); font-size: var(--t-sm); }
+/* פרטי הקשר אינם הנעה לפעולה — אבל מי שכן מחפש אותם צריך להצליח ללחוץ */
+.foot-lines a {
+  display: inline-flex; align-items: center;
+  min-block-size: 44px; padding-inline: 0.15rem;
+}
 
 /* ------------------------------ מדיה ------------------------------ */
 @media (min-width: 640px) {
