@@ -31,3 +31,6 @@ dist/
 
 # קבצי בדיקה מקומיים — התמונות עצמן חיות ב-Cloudinary
 _review/
+
+# תצוגה מקדימה נוצרת מקומית מ-confirmation.html
+email/_preview/
