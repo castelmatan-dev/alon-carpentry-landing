@@ -1,0 +1,30 @@
+# ---- סודות: מה שלא עולה לעולם ----
+# ה-repo פרטי, אבל repo פרטי הוא הגנה אחת בלבד ולא תירוץ.
+.env
+.env.*
+!.env.example
+*.key
+*.pem
+secrets.json
+
+# ייצוא credentials מ-n8n — מכיל טוקנים חיים
+*credentials*.json
+n8n-*-export.json
+
+# ---- מערכת הפעלה ועורכים ----
+.DS_Store
+._*
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+
+# ---- לוגים וזמניים ----
+*.log
+npm-debug.log*
+tmp/
+.cache/
+
+# ---- לא בשימוש בפרויקט הזה, כרשת ביטחון ----
+node_modules/
+dist/
