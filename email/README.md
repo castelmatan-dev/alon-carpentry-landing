@@ -5,7 +5,7 @@
 | קובץ | לאן זה נכנס ב-n8n |
 |---|---|
 | `prepare.js` | צומת **Code** בשם `Prepare`, בין ה-Webhook לשלוש הפעולות. Run Once for All Items |
-| `notification.txt` | צומת **Gmail** — התראה לבעל העסק. פורמט Text, לא HTML |
+| `notification.html` | צומת **Gmail** — התראה לבעל העסק. פורמט HTML, מינימלי |
 | `confirmation.html` | צומת **Gmail** — אישור לפונה. פורמט HTML |
 | `render-preview.py` | לא נכנס ל-n8n. מציב נתוני דוגמה ומצלם תצוגה מקדימה |
 
@@ -20,7 +20,7 @@
       └─ Prepare            ← ניקוי, ולידציה, escaping, חותמת זמן
            └─ Valid?        ← שער IF על $json.valid
                 ├─ Google Sheets · Append Row     ($json.name … $json.stamp)
-                ├─ Gmail → devai.test5858@gmail.com   (notification.txt)
+                ├─ Gmail → devai.test5858@gmail.com   (notification.html)
                 └─ Gmail → {{ $json.email }}          (confirmation.html)
 
 **הצומת `Valid?` נוסף מעבר לאפיון.** `prepare.js` מחשב `valid`, אבל בסדר
@@ -42,10 +42,38 @@ n8n"; ולידציה שאין לה שער אינה הגנה. נבדק: פניי�
 **חותמת זמן אחת** לשלוש הפעולות, בשעון ישראל — במקום שלוש חותמות
 שנוצרות בשלושה רגעים שונים.
 
+## RTL — המלכודת שעלתה בבדיקה החיה
+
+**ג'ימייל מסיר את `<html>`, `<head>` ו-`<body>`** ומשתיל את התוכן בעמוד
+LTR משלו. `dir="rtl"` שיושב על תגית `<html>` פשוט נעלם, והטבלאות נופלות
+ל-LTR: התוויות עוברות לשמאל הערכים. לכן **`dir="rtl"` יושב על כל טבלה**,
+לא רק למעלה.
+
+במייל ההתראה הבעיה הייתה חמורה יותר: הוא היה **טקסט פשוט**, ובטקסט אין
+`dir` בכלל — `יישוב: Jerusalem` נשבר ל-`:יישוב Jerusalem`. **סטייה מ-PRD
+§7 שאמר "טקסט פשוט, לא HTML"** — אושרה על ידי מתן במפורש. הוא עבר ל-HTML
+מינימלי (בלי לוגו, בלי תמונות), עם שורת פתיחה שמסבירה מה הגיע, וטלפון
+ומייל לחיצים.
+
+**המעבר מטקסט ל-HTML הכניס סיכון הזרקה שלא היה קיים קודם.** לכן כל הערכים
+במייל ההתראה נלקחים מ-`$json.safe.*`, בדיוק כמו במייל האישור. היוצא היחיד
+הוא ה-`href` של `tel:`, שם `$json.phone` עובר `replace` שמשאיר ספרות ו-`+`
+בלבד — בטוח בהגדרה.
+
+`_review/gmail_sim.py` מדמה את הניקוי של ג'ימייל ומצלם את התוצאה:
+
+    python3 _review/gmail_sim.py email/confirmation.html  _review/shots/mail.png
+    python3 _review/gmail_sim.py email/notification.html  _review/shots/notif.png
+
+הסקריפט יוצא בקוד 1 אם התווית לא יושבת מימין לערך.
+
 ## הערות למי שעורך את המייל
 
 - טבלאות ו-CSS inline בלבד. ג'ימייל מסיר `<style>`, ואאוטלוק מרנדר
   במנוע Word — flex, grid ו-`border-radius` לא קיימים שם.
+- **בלי תחיליות דקדוקיות על ערכים מהטופס.** `מ{{city}}` נותן
+  `מJerusalem`, ו-`מחפש {{category}}` נותן `מחפש עוד לא בטוח`. מפרידים
+  בנקודות.
 - הלוגו והתמונה מגיעים מ-Cloudinary בכתובת ציבורית, בלי קבצים מצורפים.
 - הפורמטים מפורשים (`f_png` ללוגו, `f_jpg` לתמונה) ולא `f_auto`:
   לקוח מייל לא תמיד שולח כותרת `Accept` שאפשר לסמוך עליה.

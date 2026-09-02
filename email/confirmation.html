@@ -12,21 +12,24 @@
   מייל האישור לפונה. n8n · Send Email · HTML.
   טבלאות ו-CSS inline בלבד: ג'ימייל מסיר <style>, ואאוטלוק מרנדר במנוע Word.
   הערכים מגיעים מ-Code node "Prepare" — $json.safe.* כבר עבר בריחת תווים.
+  dir="rtl" יושב על כל טבלה ולא רק על <html>: ג'ימייל מסיר את <html>,
+  <head> ו-<body> ומשתיל את התוכן בעמוד LTR משלו. כיוון שיושב רק למעלה
+  נעלם, והטבלאות נופלות ל-LTR — התוויות עוברות לשמאל הערכים.
   הפלטה זהה ל-style.css: ink #23282B · paper #E8E9E4 · steel #38566B · oak #7A4E24
 -->
 
 <body style="margin:0; padding:0; background-color:#E8E9E4;" bgcolor="#E8E9E4">
 
 <!-- שורת התצוגה המקדימה ברשימת המיילים. מוסתרת בגוף ההודעה. -->
-<div style="display:none; font-size:1px; color:#E8E9E4; line-height:1px; max-height:0; max-width:0; opacity:0; overflow:hidden;">
+<div dir="rtl" style="display:none; font-size:1px; color:#E8E9E4; line-height:1px; max-height:0; max-width:0; opacity:0; overflow:hidden;">
   קיבלתי את הפנייה שלך. הנה הפרטים שנמסרו, והשלב הבא בתהליך.
 </div>
 
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#E8E9E4" style="background-color:#E8E9E4;">
+<table dir="rtl" role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#E8E9E4" style="background-color:#E8E9E4;">
 <tr>
 <td align="center" style="padding:24px 12px;">
 
-  <table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0" style="width:100%; max-width:600px; font-family:-apple-system,'Segoe UI','Arial Hebrew',Arial,sans-serif;">
+  <table dir="rtl" role="presentation" width="600" cellpadding="0" cellspacing="0" border="0" style="width:100%; max-width:600px; font-family:-apple-system,'Segoe UI','Arial Hebrew',Arial,sans-serif;">
 
     <!-- ============ לוגו ============ -->
     <tr>
@@ -52,7 +55,7 @@
       <p style="margin:0 0 10px 0; font-size:13px; font-weight:700; letter-spacing:0.03em; color:#38566B;">
         מה נמסר
       </p>
-      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"
+      <table dir="rtl" role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"
              style="border-top:1px solid #C7CBC4; margin:0 0 28px 0;">
         <tr>
           <td width="96" valign="top" style="padding:12px 0 0 12px; font-size:14px; color:#5A6165; white-space:nowrap;">שם</td>
@@ -84,7 +87,7 @@
       <p style="margin:0 0 10px 0; font-size:13px; font-weight:700; letter-spacing:0.03em; color:#38566B;">
         מה קורה עכשיו
       </p>
-      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border-top:1px solid #C7CBC4;">
+      <table dir="rtl" role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border-top:1px solid #C7CBC4;">
         <tr>
           <td width="30" valign="top" style="padding:14px 0 0 10px; font-size:15px; font-weight:700; color:#38566B;">1</td>
           <td valign="top" style="padding:14px 0 0 0;">
@@ -131,7 +134,7 @@
       </p>
 
       <!-- ---------- קשר ---------- -->
-      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"
+      <table dir="rtl" role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"
              style="border-top:1px solid #C7CBC4;">
         <tr><td style="padding:18px 0 0 0; font-size:15px; line-height:1.8; color:#5A6165;">
           יש תיקון לפרטים, או משהו שנשכח?

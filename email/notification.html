@@ -1,0 +1,69 @@
+<!-- n8n · Gmail · HTML · אל devai.test5858@gmail.com
+     התראה לבעל העסק. נועדה להיקרא בשנייה אחת מהטלפון, בזמן שאלון עומד
+     בבית המלאכה — ולכן בלי לוגו, בלי תמונות ובלי צבע מיותר.
+
+     למה HTML ולא טקסט: בטקסט פשוט אין dir, וג'ימייל מיישר את ההודעה
+     לשמאל — "יישוב: Jerusalem" נשבר ל-":יישוב Jerusalem". dir="rtl"
+     על הטבלה הוא הדרך היחידה האמינה לתקן את זה.
+
+     הערכים מ-$json.safe.* בלבד. ברגע שההודעה היא HTML, פנייה שמכילה
+     '<' יכולה לשבור אותה או להזריק לתוכה — בדיוק מה ש-Prepare מונע.
+     היוצא היחיד הוא ה-href של tel:, שם $json.phone עובר replace שמשאיר
+     ספרות ו-+ בלבד — בטוח בהגדרה, ולא ניתן לבנות ממנו תו שובר HTML. -->
+
+<div dir="rtl" style="font-family:-apple-system,'Segoe UI','Arial Hebrew',Arial,sans-serif; font-size:16px; line-height:1.7; color:#23282B;">
+
+  <p style="margin:0 0 4px 0; font-size:17px; font-weight:700;">
+    הגיעה פנייה חדשה לעבודה דרך האתר.
+  </p>
+  <!-- בלי תחיליות דקדוקיות: "מ{{city}}" נותן "מJerusalem", ו"מחפש {{category}}"
+       נותן "מחפש עוד לא בטוח". מפריד בנקודות — קריא עם כל ערך שהטופס מחזיר. -->
+  <p style="margin:0 0 20px 0; font-size:15px; color:#5A6165;">
+    {{ $json.safe.name }} · {{ $json.safe.city }} · {{ $json.safe.category }}
+  </p>
+
+  <table dir="rtl" role="presentation" cellpadding="0" cellspacing="0" border="0"
+         style="border-top:1px solid #C7CBC4; width:100%; max-width:520px;">
+    <tr>
+      <td width="90" valign="top" style="padding:12px 0 0 12px; font-size:14px; color:#5A6165; white-space:nowrap;">שם</td>
+      <td valign="top" style="padding:12px 0 0 0; font-size:16px; font-weight:700;">{{ $json.safe.name }}</td>
+    </tr>
+    <tr>
+      <td valign="top" style="padding:10px 0 0 12px; font-size:14px; color:#5A6165; white-space:nowrap;">טלפון</td>
+      <td valign="top" style="padding:10px 0 0 0;" dir="ltr" align="right">
+        <a href="tel:{{ $json.phone.replace(/[^\d+]/g, '') }}"
+           style="font-size:17px; font-weight:700; color:#38566B; text-decoration:none;">{{ $json.safe.phone }}</a>
+      </td>
+    </tr>
+    <tr>
+      <td valign="top" style="padding:10px 0 0 12px; font-size:14px; color:#5A6165; white-space:nowrap;">מייל</td>
+      <td valign="top" style="padding:10px 0 0 0;" dir="ltr" align="right">
+        <a href="mailto:{{ $json.safe.email }}"
+           style="font-size:16px; color:#38566B; text-decoration:none;">{{ $json.safe.email }}</a>
+      </td>
+    </tr>
+    <tr>
+      <td valign="top" style="padding:10px 0 0 12px; font-size:14px; color:#5A6165; white-space:nowrap;">יישוב</td>
+      <td valign="top" style="padding:10px 0 0 0;">{{ $json.safe.city }}</td>
+    </tr>
+    <tr>
+      <td valign="top" style="padding:10px 0 0 12px; font-size:14px; color:#5A6165; white-space:nowrap;">סוג הרהיט</td>
+      <td valign="top" style="padding:10px 0 0 0;">{{ $json.safe.category }}</td>
+    </tr>
+    <tr>
+      <td valign="top" style="padding:10px 0 14px 12px; font-size:14px; color:#5A6165; white-space:nowrap;">מה צריך</td>
+      <td valign="top" style="padding:10px 0 14px 0; line-height:1.7;">{{ $json.safe.details }}</td>
+    </tr>
+  </table>
+
+  <p style="margin:16px 0 0 0; font-size:14px; color:#5A6165;">
+    הפונה כבר קיבל מייל אישור אוטומטי עם הפרטים האלה.
+    <br />
+    השלב הבא בתהליך שלך הוא שיחת טלפון.
+  </p>
+
+  <p style="margin:14px 0 0 0; font-size:13px; color:#9BA29C;">
+    התקבל {{ $json.stamp }} · דרך טופס הפנייה באתר · הפנייה נשמרה גם בגיליון
+  </p>
+
+</div>
