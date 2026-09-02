@@ -33,8 +33,16 @@ HTML ו-CSS בלבד — בלי ספריות, בלי כלי בנייה, בלי �
 
 ## חיבור ל-n8n
 
-`WEBHOOK_URL` בראש בלוק ה-script ב-`index.html`. **מחרוזת ריקה בכוונה**,
-כדי שמסלול הכשל יהיה ניתן לבדיקה לפני שה-workflow קיים.
+`WEBHOOK_URL` בראש בלוק ה-script ב-`index.html`. מחובר ל-workflow
+`Alon-Landing-Page` (מזהה `23X7WrkFdBrt66PX`), שנבנה ופורסם ב-2.9.2026:
+
+    https://tamburai.app.n8n.cloud/webhook/alon-lead
+
+הפניות נשמרות בגיליון [נגרות אלון ברששת — פניות מהאתר][sheet].
+ריקון המחרוזת מפעיל את מסלול הגיבוי — כך בודקים אותו בלי לכבות
+את ה-workflow.
+
+[sheet]: https://docs.google.com/spreadsheets/d/1YqkCqsdDOzdAukz55uNmLY6rd-ZRMxEKPNkqMk-8cbg/edit
 
 ההתנהגות זהה בכל מצב כושל — חיבור שנדחה, שגיאת שרת, או CORS חסום:
 הודעה ברורה, כפתור `mailto` עם כל מה שכבר מולא, **והשדות לא מתרוקנים**.
@@ -45,9 +53,13 @@ HTML ו-CSS בלבד — בלי ספריות, בלי כלי בנייה, בלי �
 ## בדיקות
 
     python3 -m http.server 8899
-    python3 _review/test_page.py            # 16 בדיקות תפקוד
+    python3 _review/test_page.py            # 18 בדיקות תפקוד
     python3 _review/type_audit.py           # עקביות הסולם הטיפוגרפי
     python3 _review/test_webhook_paths.py   # ארבעת מצבי ה-webhook מול שרת דמה
+
+שתי הבדיקות חוסמות את הבקשה ל-webhook (`page.route`) במקום להסתמך על
+`WEBHOOK_URL` ריק. לכן הן תקפות גם עכשיו, כשהכתובת מחוברת, ולא שולחות
+פנייה אמיתית ל-workflow החי בכל הרצה.
 
 `_review/` לא נכנס ל-git (צילומי מסך כבדים).
 

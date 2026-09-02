@@ -5,17 +5,29 @@
 | קובץ | לאן זה נכנס ב-n8n |
 |---|---|
 | `prepare.js` | צומת **Code** בשם `Prepare`, בין ה-Webhook לשלוש הפעולות. Run Once for All Items |
-| `notification.txt` | צומת **Send Email** — התראה לבעל העסק. פורמט Text, לא HTML |
-| `confirmation.html` | צומת **Send Email** — אישור לפונה. פורמט HTML |
+| `notification.txt` | צומת **Gmail** — התראה לבעל העסק. פורמט Text, לא HTML |
+| `confirmation.html` | צומת **Gmail** — אישור לפונה. פורמט HTML |
 | `render-preview.py` | לא נכנס ל-n8n. מציב נתוני דוגמה ומצלם תצוגה מקדימה |
+
+**למה Gmail ולא Send Email.** ה-PRD כתב "Send Email", שהוא צומת SMTP.
+ב-n8n של מתן אין credential של SMTP — יש שלושה של `gmailOAuth2`. שתי
+הפעולות זהות (נמען, נושא, גוף, Text או HTML), רק הצומת שונה. השולח:
+`DeVAI Course test Gmail`, כלומר `devai.test5858@gmail.com`.
 
 ## סדר הצמתים
 
     Webhook (POST, publish)
       └─ Prepare            ← ניקוי, ולידציה, escaping, חותמת זמן
-           ├─ Google Sheets · Append Row     ($json.name … $json.stamp)
-           ├─ Send Email → devai.test5858@gmail.com   (notification.txt)
-           └─ Send Email → {{ $json.email }}          (confirmation.html)
+           └─ Valid?        ← שער IF על $json.valid
+                ├─ Google Sheets · Append Row     ($json.name … $json.stamp)
+                ├─ Gmail → devai.test5858@gmail.com   (notification.txt)
+                └─ Gmail → {{ $json.email }}          (confirmation.html)
+
+**הצומת `Valid?` נוסף מעבר לאפיון.** `prepare.js` מחשב `valid`, אבל בסדר
+המקורי איש לא קרא אותו — כלומר פנייה עם honeypot מלא הייתה נכנסת לשיטס
+ומייצרת שני מיילים. PRD §7 אומר שההגנה היא "CORS מצומצם + ולידציה בצד
+n8n"; ולידציה שאין לה שער אינה הגנה. נבדק: פנייה עם `company` מלא ופנייה
+עם טלפון ומייל פסולים לא יצרו שורה ולא מייל. **טעון אישור מתן.**
 
 ## למה יש צומת Prepare
 
