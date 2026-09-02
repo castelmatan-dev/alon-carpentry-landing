@@ -20,6 +20,8 @@
   /* --- טיפוגרפיה --- */
   --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans Hebrew",
           "Arial Hebrew", Arial, sans-serif;
+  /* מונוספייס למספרים בלבד. גופני מונוספייס לא מכילים עברית, והנפילה
+     לגופן חלופי נותנת לעברית רוחב תו קבוע — וזה נראה שבור. */
   --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
 
   --t-xs:  0.75rem;
@@ -81,12 +83,14 @@ a:hover { color: var(--steel-dk); }
 .dim-line { block-size: 1px; background: var(--rule); flex: 1 1 auto; min-inline-size: 1rem; }
 .dim-label {
   flex: none;
-  font-family: var(--mono);
-  font-size: var(--t-xs);
+  font-size: var(--t-xs); font-weight: 600;
   letter-spacing: 0.03em;
   color: var(--steel);
   white-space: nowrap;
 }
+/* טווח מספרים הוא יחידה אחת שנקראת LTR, אבל מקומה בשורה נקבע
+   לפי סדר הקריאה בעברית. bidi-isolate מונע את היפוך הסדר. */
+.dim-label .mono { font-weight: 400; letter-spacing: 0.04em; unicode-bidi: isolate; direction: ltr; }
 
 .dim-hero { max-inline-size: 22rem; margin: 1.5rem 0 1.75rem; }
 
@@ -110,7 +114,7 @@ a:hover { color: var(--steel-dk); }
 .mark-name { font-weight: 800; font-size: var(--t-lg); letter-spacing: -0.01em; }
 .mark-rule { inline-size: 1.75rem; block-size: 1px; background: var(--rule); flex: none; }
 .mark-sub {
-  font-family: var(--mono); font-size: var(--t-xs);
+  font-size: var(--t-xs); font-weight: 600;
   letter-spacing: 0.03em; color: var(--ink-soft); white-space: nowrap;
 }
 
@@ -147,7 +151,7 @@ a:hover { color: var(--steel-dk); }
   padding: clamp(2.5rem, 8vw, 5rem) var(--pad) 0;
 }
 .eyebrow {
-  font-family: var(--mono); font-size: var(--t-xs);
+  font-size: var(--t-xs); font-weight: 600;
   letter-spacing: 0.03em; color: var(--ink-soft);
   margin-block-end: 1.1rem;
 }
@@ -164,7 +168,7 @@ a:hover { color: var(--steel-dk); }
 /* התווית אינה הערת שוליים ואינה בצבע חלש — היא נקראת */
 .render-tag {
   display: inline-block;
-  font-family: var(--mono); font-size: var(--t-xs);
+  font-size: var(--t-xs); font-weight: 700;
   letter-spacing: 0.03em;
   color: var(--paper); background: var(--ink);
   padding: 0.25rem 0.55rem; border-radius: 2px;
@@ -181,7 +185,7 @@ a:hover { color: var(--steel-dk); }
 .band:first-of-type { border-block-start: 0; }
 
 .sec-label {
-  font-family: var(--mono); font-size: var(--t-xs);
+  font-size: var(--t-xs); font-weight: 700;
   letter-spacing: 0.03em; color: var(--steel);
   margin-block-end: 1rem;
 }
@@ -202,7 +206,7 @@ a:hover { color: var(--steel-dk); }
 }
 .cats li:last-child { border-block-end: 0; }
 .cat-n {
-  font-family: var(--mono); font-size: var(--t-sm); font-weight: 400;
+  font-size: var(--t-sm); font-weight: 700;
   color: var(--steel); flex: none; inline-size: 1.25rem;
 }
 
@@ -215,9 +219,9 @@ a:hover { color: var(--steel-dk); }
 }
 .steps::before {
   content: ""; position: absolute;
-  inset-inline-start: auto; inset-block: 0.9rem 1.5rem;
+  inset-block: 0.9rem 1.5rem;
   inline-size: 1px; background: var(--rule-fade);
-  inset-inline-end: 0.875rem;
+  inset-inline-start: 0.875rem; inset-inline-end: auto;
 }
 .step { display: flex; gap: 1.25rem; padding-block-end: 2.25rem; }
 .step:last-child { padding-block-end: 0; }
@@ -255,7 +259,7 @@ a:hover { color: var(--steel-dk); }
 }
 .specs > div:last-child { border-block-end: 0; }
 .specs dt {
-  font-family: var(--mono); font-size: var(--t-xs);
+  font-size: var(--t-xs); font-weight: 700;
   letter-spacing: 0.03em; color: var(--steel);
 }
 .specs dd { margin: 0; }
@@ -273,7 +277,7 @@ a:hover { color: var(--steel-dk); }
 .field { display: grid; gap: 0.35rem; }
 
 .field label {
-  font-family: var(--mono); font-size: var(--t-xs);
+  font-size: var(--t-xs); font-weight: 600;
   letter-spacing: 0.03em; color: var(--ink-soft);
 }
 .field input, .field select, .field textarea {
