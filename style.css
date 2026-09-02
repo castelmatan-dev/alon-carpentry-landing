@@ -13,7 +13,9 @@
   --surface:  #F5F6F2;
   --rule:     #9BA29C;   /* קווי המידה */
   --rule-fade:#C7CBC4;
-  --steel:    #38566B;   /* האקסנט היחיד */
+  --steel:    #38566B;   /* אקסנט פונקציונלי: פעולות, מספרים, פוקוס */
+  --oak:      #7A4E24;   /* עץ. מופיע בעמוד במקום אחד בלבד — בלוגו.
+                            הסימן החם היחיד מחוץ לתמונות. 5.9:1 על הנייר. */
   --steel-dk: #2A4253;
   --err:      #8C3A2E;
 
@@ -24,13 +26,15 @@
      לגופן חלופי נותנת לעברית רוחב תו קבוע — וזה נראה שבור. */
   --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
 
-  --t-xs:  0.75rem;
-  --t-sm:  0.875rem;
-  --t-base:1.0625rem;             /* 17px — עברית נקראת טוב יותר קצת גדול */
-  --t-lg:  1.1875rem;
-  --t-h3:  1.125rem;
-  --t-h2:  clamp(1.5rem, 4.5vw, 2.125rem);
-  --t-h1:  clamp(2.75rem, 12vw, 5.5rem);
+  /* סולם אחד לכל העמוד, ~1.15 בין מדרגה למדרגה.
+     כל תפקיד יושב על מדרגה משלו — אין שני תפקידים באותו גודל. */
+  --t-xs:  0.8125rem;   /* 13 · תווית מיקרו: תגית הדמיה, קו מידה */
+  --t-sm:  0.9375rem;   /* 15 · תווית סקשן, טקסט משני, הערות */
+  --t-base:1.0625rem;   /* 17 · גוף */
+  --t-lg:  1.25rem;     /* 20 · פסקת פתיחה */
+  --t-h3:  1.3125rem;   /* 21 · כותרת שלב */
+  --t-h2:  clamp(1.75rem, 5vw, 2.25rem);     /* 28–36 */
+  --t-h1:  clamp(2.75rem, 12vw, 5.5rem);     /* 44–88 */
 
   /* --- מרווח --- */
   --gap:    1rem;
@@ -111,10 +115,14 @@ a:hover { color: var(--steel-dk); }
   text-decoration: none; color: var(--ink);
   min-block-size: 44px;              /* שטח נגיעה, גם ללוגו */
 }
-.mark-name { font-weight: 800; font-size: var(--t-lg); letter-spacing: -0.01em; }
-.mark-rule { inline-size: 1.75rem; block-size: 1px; background: var(--rule); flex: none; }
+.mark-name {
+  font-weight: 800; letter-spacing: -0.015em;
+  font-size: clamp(1.3125rem, 3.8vw, 1.5625rem);
+  color: var(--oak);
+}
+.mark-rule { inline-size: 2rem; block-size: 1px; background: var(--rule); flex: none; }
 .mark-sub {
-  font-size: var(--t-xs); font-weight: 600;
+  font-size: var(--t-sm); font-weight: 600;
   letter-spacing: 0.03em; color: var(--ink-soft); white-space: nowrap;
 }
 
@@ -151,7 +159,7 @@ a:hover { color: var(--steel-dk); }
   padding: clamp(2.5rem, 8vw, 5rem) var(--pad) 0;
 }
 .eyebrow {
-  font-size: var(--t-xs); font-weight: 600;
+  font-size: var(--t-sm); font-weight: 600;
   letter-spacing: 0.03em; color: var(--ink-soft);
   margin-block-end: 1.1rem;
 }
@@ -165,15 +173,16 @@ a:hover { color: var(--steel-dk); }
 .hero-fig { margin: clamp(2.5rem, 7vw, 4rem) 0 0; position: relative; }
 .hero-fig img { border-radius: 2px; }
 
-/* התווית אינה הערת שוליים ואינה בצבע חלש — היא נקראת */
+/* גילוי נאות שקט. נוכח על כל תמונה, אבל אינו הדבר שרואים ראשון. */
 .render-tag {
-  display: inline-block;
-  font-size: var(--t-xs); font-weight: 700;
-  letter-spacing: 0.03em;
-  color: var(--paper); background: var(--ink);
-  padding: 0.25rem 0.55rem; border-radius: 2px;
+  font-size: var(--t-xs); font-weight: 600;
+  color: var(--ink-soft);
 }
-.hero-fig .render-tag { position: absolute; inset-block-end: 0.75rem; inset-inline-end: 0.75rem; }
+.render-tag::after { content: " ·"; color: var(--rule); }
+.hero-fig figcaption {
+  margin-block-start: 0.55rem;
+  font-size: var(--t-sm); color: var(--ink-soft);
+}
 
 /* ------------------------------- סקשנים ------------------------------- */
 .band {
@@ -185,7 +194,7 @@ a:hover { color: var(--steel-dk); }
 .band:first-of-type { border-block-start: 0; }
 
 .sec-label {
-  font-size: var(--t-xs); font-weight: 700;
+  font-size: var(--t-sm); font-weight: 700;
   letter-spacing: 0.03em; color: var(--steel);
   margin-block-end: 1rem;
 }
@@ -200,14 +209,14 @@ a:hover { color: var(--steel-dk); }
 .cats { list-style: none; margin: 0; padding: 0; display: grid; gap: 0; }
 .cats li {
   display: flex; align-items: baseline; gap: 1rem;
-  font-size: clamp(1.25rem, 4vw, 1.75rem); font-weight: 800;
+  font-size: clamp(1.5rem, 4.5vw, 1.875rem); font-weight: 800;
   padding-block: 1.1rem;
   border-block-end: 1px solid var(--rule-fade);
 }
 .cats li:last-child { border-block-end: 0; }
 .cat-n {
   font-size: var(--t-sm); font-weight: 700;
-  color: var(--steel); flex: none; inline-size: 1.25rem;
+  color: var(--steel); flex: none; inline-size: 1.5rem;
 }
 
 /* ------------------------------- התהליך -------------------------------
@@ -227,14 +236,14 @@ a:hover { color: var(--steel-dk); }
 .step:last-child { padding-block-end: 0; }
 .step-num {
   flex: none; inline-size: 1.75rem; text-align: center;
-  font-family: var(--mono); font-size: var(--t-sm); color: var(--steel);
+  font-family: var(--mono); font-size: var(--t-base); color: var(--steel);
   background: var(--paper);           /* הקו נשבר סביב המספר, כמו בשרטוט */
   padding-block: 0.35rem;
   position: relative; z-index: 1;
   align-self: flex-start;
 }
-.step-body h3 { font-size: var(--t-h3); margin-block-end: 0.3rem; }
-.step-body p { color: var(--ink-soft); }
+.step-body h3 { font-size: var(--t-h3); margin-block-end: 0.35rem; }
+.step-body p { font-size: var(--t-sm); color: var(--ink-soft); }
 
 /* ------------------------------- גלריה ------------------------------- */
 .grid {
@@ -246,7 +255,7 @@ a:hover { color: var(--steel-dk); }
 .grid img { border-radius: 2px; background: var(--rule-fade); }
 .grid figcaption {
   display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap;
-  margin-block-start: 0.6rem;
+  margin-block-start: 0.55rem;
   font-size: var(--t-sm); color: var(--ink-soft);
 }
 
@@ -259,7 +268,7 @@ a:hover { color: var(--steel-dk); }
 }
 .specs > div:last-child { border-block-end: 0; }
 .specs dt {
-  font-size: var(--t-xs); font-weight: 700;
+  font-size: var(--t-sm); font-weight: 700;
   letter-spacing: 0.03em; color: var(--steel);
 }
 .specs dd { margin: 0; }
@@ -277,7 +286,7 @@ a:hover { color: var(--steel-dk); }
 .field { display: grid; gap: 0.35rem; }
 
 .field label {
-  font-size: var(--t-xs); font-weight: 600;
+  font-size: var(--t-sm); font-weight: 600;
   letter-spacing: 0.03em; color: var(--ink-soft);
 }
 .field input, .field select, .field textarea {
@@ -301,6 +310,7 @@ a:hover { color: var(--steel-dk); }
 .field [aria-invalid="true"] { border-block-end-color: var(--err); }
 
 .hint { font-size: var(--t-sm); color: var(--ink-soft); }
+.foot-lines a { color: var(--steel); }
 .err  { font-size: var(--t-sm); color: var(--err); font-weight: 600; }
 
 /* honeypot — מוסתר מבני אדם, זמין לבוטים */
