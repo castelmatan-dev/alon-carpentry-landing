@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="578" height="84" viewBox="0 0 578 84" role="img" aria-label="אלון ברששת · נגרות בהזמנה">
+  <title>אלון ברששת · נגרות בהזמנה</title>
+  <rect width="100%" height="100%" fill="#E8E9E4"/>
+  <style>
+    .n { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans Hebrew", "Arial Hebrew", Arial, sans-serif; font-weight: 800; font-size: 50px;
+         letter-spacing: -0.750px; fill: #7A4E24; }
+    .s { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans Hebrew", "Arial Hebrew", Arial, sans-serif; font-weight: 600; font-size: 30px;
+         letter-spacing: 0.900px; fill: #5A6165; }
+  </style>
+  <text class="n" x="310.0" y="59.8" text-anchor="end" direction="rtl">אלון ברששת</text>
+  <rect x="226.8" y="41.4" width="64" height="1" fill="#9BA29C"/>
+  <text class="s" x="24.0" y="49.8" text-anchor="end" direction="rtl">נגרות בהזמנה</text>
+</svg>
