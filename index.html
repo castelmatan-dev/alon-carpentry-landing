@@ -277,8 +277,8 @@
   "use strict";
 
   // כתובת ה-Production של ה-webhook ב-n8n.
-  // ריקה = מסלול הגיבוי נכנס לפעולה, וכך אפשר לבדוק אותו לפני שה-workflow קיים.
-  var WEBHOOK_URL = "";
+  // ריקון המחרוזת מפעיל את מסלול הגיבוי — כך בודקים אותו בלי לכבות את ה-workflow.
+  var WEBHOOK_URL = "https://tamburai.app.n8n.cloud/webhook/alon-lead";
 
   var form   = document.getElementById("lead-form");
   var btn    = document.getElementById("submit-btn");
@@ -351,7 +351,10 @@
   }
 
   function succeed() {
+    // hidden לבדו לא מספיק: ל-#lead-form יש display:grid ב-CSS, וכלל של מחבר
+    // עם בורר ID גובר על [hidden] של הדפדפן. שתי השורות יחד — סמנטיקה והסתרה בפועל.
     form.hidden = true;
+    form.style.display = "none";
     status.hidden = false;
     status.className = "status status-ok";
     status.innerHTML =
