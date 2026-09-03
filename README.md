@@ -61,6 +61,12 @@ HTML ו-CSS בלבד — בלי ספריות, בלי כלי בנייה, בלי �
     python3 _review/test_page.py            # 18 בדיקות תפקוד
     python3 _review/type_audit.py           # עקביות הסולם הטיפוגרפי
     python3 _review/test_webhook_paths.py   # ארבעת מצבי ה-webhook מול שרת דמה
+    python3 _review/test_validation_sync.py # הוולידציה זהה בדפדפן ובשרת
+
+**הוולידציה חיה בשני מקומות** — `RULES` ב-`index.html` (נוחות למשתמש)
+ו-`prepare.js` (ההגנה האמיתית). פער ביניהם הוא כשל שקט: אם השרת מחמיר
+יותר, המשתמש רואה "נשלח" והפנייה נופלת — כי ה-webhook מחזיר 200 לפני
+שהשער בכלל רץ. `test_validation_sync.py` משווה ספים ו-regex ונכשל על פער.
 
 שתי הבדיקות חוסמות את הבקשה ל-webhook (`page.route`) במקום להסתמך על
 `WEBHOOK_URL` ריק. לכן הן תקפות גם עכשיו, כשהכתובת מחוברת, ולא שולחות

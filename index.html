@@ -289,7 +289,7 @@
     "f-phone":    { msg: "מספר טלפון לא תקין. לדוגמה 0541234567.", ok: function (v) { return /^0\d{1,2}[-\s]?\d{7}$/.test(v.trim().replace(/[^\d-\s]/g, "")); } },
     "f-email":    { msg: "כתובת מייל לא תקינה. לשם יישלח האישור.", ok: function (v) { return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v.trim()); } },
     "f-city":     { msg: "באיזה יישוב? אני מגיע למדוד.", ok: function (v) { return v.trim().length >= 2; } },
-    "f-details":  { msg: "כתבו בכמה מילים מה אתם צריכים.", ok: function (v) { return v.trim().length >= 5; } }
+    "f-details":  { msg: "כתבו מה אתם צריכים. מספיקה מילה אחת.", ok: function (v) { return v.trim().length >= 2; } }
   };
 
   function showErr(id, message) {

@@ -28,9 +28,12 @@ for (const item of $input.all()) {
 
   // ולידציה בצד השרת. כתובת ה-webhook גלויה ב-F12, ולכן הבדיקה
   // בדפדפן היא נוחות למשתמש — לא הגנה. ר' PRD §7.
+  // הספים כאן חייבים להיות זהים ל-RULES ב-index.html. פער ביניהם שקט
+  // ומסוכן: הדפדפן מאשר, השרת דוחה, והמשתמש רואה "נשלח" כי ה-webhook
+  // מחזיר 200 לפני שהשער רץ. _review/test_validation_sync.py שומר על זה.
   const bad = [];
   if (raw.name.length    < 2) bad.push('name');
-  if (raw.details.length < 5) bad.push('details');
+  if (raw.details.length < 2) bad.push('details');
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(raw.email)) bad.push('email');
   if (!/^0\d{1,2}[-\s]?\d{7}$/.test(raw.phone.replace(/[^\d\-\s]/g, ''))) bad.push('phone');
   if (String(b.company ?? '') !== '') bad.push('honeypot');   // בוט
