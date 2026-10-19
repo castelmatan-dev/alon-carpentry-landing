@@ -82,6 +82,16 @@ begin
   end if;
   passed := passed + 1;
 
+  -- t_fail_uses_current_stage (n8n passes null: the stage last reported is the one that failed)
+  vs := public.create_version('pricelist', 'null-stage.md');
+  perform public.report_stage(vs.id, 'embedding');
+  perform public.fail_version(vs.id, null, 'boom');
+  if (select failed_stage from public.kb_versions where id = vs.id) is distinct from 'embedding' then
+    raise exception 'KB_TEST_FAILED: t_fail_uses_current_stage: failed_stage=%',
+      (select failed_stage from public.kb_versions where id = vs.id);
+  end if;
+  passed := passed + 1;
+
   -- t_inflight_invisible
   vp := public.create_version('order-terms', 'order-terms.md');
   insert into public.kb_chunks (content, metadata, embedding) values
