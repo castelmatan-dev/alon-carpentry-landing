@@ -1,0 +1,9 @@
+# Not part of the site — keep docs, tooling and sources off the live domain
+*.md
+*.py
+email/
+_review/
+supabase/
+n8n/
+.env.example
+.superpowers/
