@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>ניהול מסמכים · אלון ברששת</title>
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="admin.css">
+</head>
+<body>
+
+<header class="site-head">
+  <a class="mark" href="./">
+    <span class="mark-name">אלון ברששת</span>
+    <span class="mark-rule" aria-hidden="true"></span>
+    <span class="mark-sub">ניהול מסמכים</span>
+  </a>
+</header>
+
+<main class="admin">
+
+  <section class="band" id="login">
+    <p class="sec-label">כניסה</p>
+    <h1 class="admin-title">מחירון ותנאי הזמנה</h1>
+    <p class="note">המסמכים שהבוט באתר עונה לפיהם. כדי להעלות גרסה חדשה צריך סיסמה.</p>
+    <form id="login-form" class="admin-form" autocomplete="off">
+      <div class="field">
+        <label for="admin-key">סיסמה</label>
+        <input id="admin-key" type="password" required>
+      </div>
+      <p id="login-error" class="admin-error" role="alert" hidden></p>
+      <button id="login-btn" class="btn btn-solid" type="submit">כניסה</button>
+    </form>
+  </section>
+
+  <div id="app" hidden>
+    <section class="band">
+      <p class="sec-label">העלאת גרסה חדשה</p>
+      <h1 class="admin-title">מחירון ותנאי הזמנה</h1>
+      <p class="note">הגרסה הקודמת ממשיכה לפעול עד שהחדשה נכנסה במלואה ונבדקה. אם משהו נכשל באמצע, שום דבר לא משתנה בבוט.</p>
+
+      <form id="upload-form" class="admin-form">
+        <div class="field">
+          <label for="doc-key">איזה מסמך</label>
+          <select id="doc-key" required>
+            <option value="pricelist">מחירון</option>
+            <option value="order-terms">תנאי הזמנה</option>
+          </select>
+        </div>
+        <div class="field">
+          <span class="field-label" id="file-label">קובץ (md או txt)</span>
+          <div class="file-pick">
+            <input id="file" class="visually-hidden" type="file" accept=".md,.txt,text/markdown,text/plain" aria-labelledby="file-label" required>
+            <label for="file" class="btn btn-ghost">בחירת קובץ</label>
+            <span id="file-name" class="file-name">לא נבחר קובץ</span>
+          </div>
+        </div>
+        <details id="test-tools" class="test-tools">
+          <summary>בדיקה: כשל מדומה</summary>
+          <div class="field">
+            <label for="simulate-fail">להכשיל את ההעלאה בשלב</label>
+            <select id="simulate-fail">
+              <option value="">בלי כשל (העלאה רגילה)</option>
+              <option value="processing">עיבוד</option>
+              <option value="verifying">בדיקה</option>
+            </select>
+          </div>
+        </details>
+        <button id="upload-btn" class="btn btn-solid" type="submit">העלאה</button>
+      </form>
+
+      <ol id="stages" class="stages" aria-live="polite" aria-label="שלבי ההעלאה">
+        <li data-step="receive" data-state="pending"><span class="st-name">קבלה</span><span class="st"></span></li>
+        <li data-step="process" data-state="pending"><span class="st-name">עיבוד <small>חיתוך, הטמעה ושמירה</small></span><span class="st"></span></li>
+        <li data-step="verify" data-state="pending"><span class="st-name">בדיקה</span><span class="st"></span></li>
+        <li data-step="swap" data-state="pending"><span class="st-name">החלפה</span><span class="st"></span></li>
+      </ol>
+
+      <div id="result" class="status" role="status" hidden></div>
+    </section>
+
+    <section class="band">
+      <p class="sec-label">מסמכים פעילים</p>
+      <table class="docs">
+        <thead><tr><th>מסמך</th><th>גרסה</th><th>עודכן</th><th>חתיכות</th></tr></thead>
+        <tbody id="docs"></tbody>
+      </table>
+      <button id="logout-btn" class="btn btn-ghost" type="button">יציאה</button>
+    </section>
+  </div>
+
+</main>
+
+<script>
+(function () {
+  "use strict";
+  const API = "https://tamburai.app.n8n.cloud/webhook/alon-kb";
+  const POLL_MS = 1000;
+  const STORE = "alonAdminKey";
+  const STEPS = ["receive", "process", "verify", "swap"];
+  const STEP_NAME = { receive: "קבלה", process: "עיבוד", verify: "בדיקה", swap: "החלפה" };
+  const STAGE_STEP = { received: 0, chunking: 1, embedding: 1, saving: 1, verifying: 2, swapping: 3, done: 3 };
+  const STATE_LABEL = { pending: "ממתין", active: "בתהליך", done: "הושלם", failed: "נכשל", skipped: "לא בוצע" };
+
+  const $ = (id) => document.getElementById(id);
+  let key = null;
+  let busy = false;
+
+  function readKey() { try { return sessionStorage.getItem(STORE); } catch (e) { return key; } }
+  function saveKey(k) { key = k; try { sessionStorage.setItem(STORE, k); } catch (e) {} }
+  function dropKey() { key = null; try { sessionStorage.removeItem(STORE); } catch (e) {} }
+
+  function showLogin(error) {
+    $("app").hidden = true;
+    $("login").hidden = false;
+    $("admin-key").value = "";
+    $("login-error").textContent = error || "";
+    $("login-error").hidden = !error;
+    $("admin-key").focus();
+  }
+  function showApp() {
+    $("login").hidden = true;
+    $("app").hidden = false;
+    loadDocs();
+  }
+
+  class AuthError extends Error {}
+
+  async function api(path, opts) {
+    const o = opts || {};
+    const headers = Object.assign({ "X-Admin-Key": key }, o.headers || {});
+    const res = await fetch(API + path, Object.assign({}, o, { headers }));
+    if (res.status === 401 || res.status === 403) {
+      dropKey();
+      showLogin("סיסמה שגויה. נסו שוב.");
+      throw new AuthError("auth");
+    }
+    return res;
+  }
+
+  function setStates(states) {
+    STEPS.forEach((step, i) => {
+      const li = document.querySelector('#stages li[data-step="' + step + '"]');
+      li.dataset.state = states[i];
+      li.querySelector(".st").textContent = STATE_LABEL[states[i]];
+    });
+  }
+
+  // Every state comes from what the server reported — no timers, no guesses.
+  function statesFor(s) {
+    if (s.status === "active") return STEPS.map(() => "done");
+    if (s.status === "failed") {
+      const f = STAGE_STEP[s.failed_stage] ?? 0;
+      return STEPS.map((_, i) => (i < f ? "done" : i === f ? "failed" : "skipped"));
+    }
+    if (s.stage === "received") return ["done", "pending", "pending", "pending"];
+    const c = STAGE_STEP[s.stage] ?? 0;
+    return STEPS.map((_, i) => (i < c ? "done" : i === c ? "active" : "pending"));
+  }
+
+  function showResult(kind, lines) {
+    const box = $("result");
+    box.className = "status" + (kind === "err" ? " status-err" : "");
+    box.replaceChildren();
+    lines.forEach((text, i) => {
+      const el = document.createElement(i === 0 ? "h3" : "p");
+      el.textContent = text;
+      box.appendChild(el);
+    });
+    box.hidden = false;
+  }
+
+  function failureLines(s) {
+    const step = STEP_NAME[STEPS[STAGE_STEP[s.failed_stage] ?? 0]];
+    const why = s.error === "timeout" ? "השלב לא דיווח על התקדמות במשך 10 דקות." : s.error;
+    return ["ההעלאה נכשלה בשלב: " + step, why || "", "הבוט ממשיך לענות לפי הגרסה הקודמת."].filter(Boolean);
+  }
+
+  function finish() {
+    busy = false;
+    $("upload-btn").disabled = false;
+    loadDocs();
+  }
+
+  async function poll(uploadId, misses) {
+    let s;
+    try {
+      const res = await api("/status?upload_id=" + encodeURIComponent(uploadId));
+      if (res.status === 404) {
+        setStates(["failed", "skipped", "skipped", "skipped"]);
+        showResult("err", ["ההעלאה לא נמצאה בשרת.", "הבוט ממשיך לענות לפי הגרסה הקודמת."]);
+        return finish();
+      }
+      s = await res.json();
+    } catch (e) {
+      if (e instanceof AuthError) return finish();
+      if (misses >= 5) {
+        showResult("err", ["אין תשובה מהשרת.", "ייתכן שההעלאה עדיין רצה. רעננו את רשימת המסמכים בעוד דקה."]);
+        return finish();
+      }
+      return setTimeout(() => poll(uploadId, misses + 1), POLL_MS);
+    }
+    setStates(statesFor(s));
+    if (s.status === "active") {
+      showResult("ok", ["הוחלף בהצלחה — " + s.chunk_count + " חתיכות.", "הבוט עונה מעכשיו לפי הגרסה החדשה."]);
+      return finish();
+    }
+    if (s.status === "failed") {
+      showResult("err", failureLines(s));
+      return finish();
+    }
+    setTimeout(() => poll(uploadId, 0), POLL_MS);
+  }
+
+  async function upload(ev) {
+    ev.preventDefault();
+    if (busy) return;
+    const file = $("file").files[0];
+    if (!file) return;
+    busy = true;
+    $("upload-btn").disabled = true;
+    $("result").hidden = true;
+    setStates(["active", "pending", "pending", "pending"]);
+
+    const fd = new FormData();
+    fd.append("doc_key", $("doc-key").value);
+    fd.append("simulate_fail", $("simulate-fail").value);
+    fd.append("file", file, file.name);
+
+    let res, body = {};
+    try {
+      res = await api("/upload", { method: "POST", body: fd });
+      body = await res.json().catch(() => ({}));
+    } catch (e) {
+      if (!(e instanceof AuthError)) {
+        setStates(["failed", "skipped", "skipped", "skipped"]);
+        showResult("err", ["אין חיבור לשרת. הקובץ לא נשלח.", "הבוט ממשיך לענות לפי הגרסה הקודמת."]);
+      }
+      return finish();
+    }
+    if (res.status === 202 && body.upload_id) {
+      setStates(statesFor({ status: "processing", stage: "received" }));
+      return poll(body.upload_id, 0);
+    }
+    setStates(["failed", "skipped", "skipped", "skipped"]);
+    if (res.status === 409) {
+      showResult("err", ["יש כבר העלאה בתהליך למסמך הזה.", "נסו שוב בעוד דקה."]);
+    } else {
+      showResult("err", [body.error || "השרת דחה את הקובץ.", "הבוט ממשיך לענות לפי הגרסה הקודמת."]);
+    }
+    finish();
+  }
+
+  const fmt = new Intl.DateTimeFormat("he-IL", {
+    timeZone: "Asia/Jerusalem", day: "2-digit", month: "2-digit", year: "numeric",
+    hour: "2-digit", minute: "2-digit", hourCycle: "h23",
+  });
+  function when(iso) {
+    const p = {};
+    fmt.formatToParts(new Date(iso)).forEach((x) => { p[x.type] = x.value; });
+    return p.day + "." + p.month + "." + p.year + " " + p.hour + ":" + p.minute;
+  }
+
+  async function loadDocs() {
+    let docs;
+    try {
+      const res = await api("/documents");
+      docs = (await res.json()).documents || [];
+    } catch (e) {
+      return;
+    }
+    const tbody = $("docs");
+    tbody.replaceChildren();
+    if (!docs.length) {
+      const tr = tbody.insertRow();
+      const td = tr.insertCell();
+      td.colSpan = 4;
+      td.textContent = "עדיין אין מסמכים פעילים.";
+      return;
+    }
+    docs.forEach((d) => {
+      const tr = tbody.insertRow();
+      tr.dataset.doc = d.doc_key;
+      [d.doc_title, String(d.version_no), when(d.activated_at), String(d.chunk_count)].forEach((v, i) => {
+        const td = tr.insertCell();
+        td.textContent = v;
+        if (i > 0) td.className = "mono";
+      });
+    });
+  }
+
+  $("login-form").addEventListener("submit", (ev) => {
+    ev.preventDefault();
+    const k = $("admin-key").value.trim();
+    if (!k) return;
+    saveKey(k);
+    $("admin-key").value = "";
+    showApp();
+  });
+  $("upload-form").addEventListener("submit", upload);
+  $("file").addEventListener("change", () => {
+    const f = $("file").files[0];
+    $("file-name").textContent = f ? f.name : "לא נבחר קובץ";
+  });
+  $("logout-btn").addEventListener("click", () => { dropKey(); showLogin(); });
+
+  setStates(["pending", "pending", "pending", "pending"]);
+  key = readKey();
+  if (key) showApp(); else showLogin();
+})();
+</script>
+</body>
+</html>

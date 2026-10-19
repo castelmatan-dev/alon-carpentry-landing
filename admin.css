@@ -1,0 +1,93 @@
+/* מסך האדמין — בונה על style.css (אותם משתנים, אותה שפת שרטוט) */
+
+.admin-title { font-size: var(--t-h2); margin-block-start: 0.25rem; }
+
+.admin-form {
+  display: grid;
+  gap: 1.25rem;
+  max-inline-size: var(--measure);
+  margin-block-start: 1.75rem;
+}
+.admin-form .btn { justify-self: start; }
+.field-label {
+  font-size: var(--t-sm); font-weight: 600;
+  letter-spacing: 0.03em; color: var(--ink-soft);
+}
+.file-pick { display: flex; align-items: center; gap: 0.9rem; flex-wrap: wrap; }
+.file-pick .btn { cursor: pointer; }
+.file-name { color: var(--ink-soft); font-size: var(--t-sm); overflow-wrap: anywhere; }
+.visually-hidden:not(:focus-visible) {
+  position: absolute; inline-size: 1px; block-size: 1px;
+  overflow: hidden; clip-path: inset(50%); white-space: nowrap;
+}
+.file-pick:focus-within .btn { outline: var(--focus); outline-offset: 2px; }
+
+.admin-error { color: var(--err); font-weight: 600; }
+
+.test-tools {
+  border-block-start: 1px dashed var(--rule-fade);
+  padding-block-start: 0.75rem;
+  color: var(--ink-soft);
+}
+.test-tools summary { cursor: pointer; font-size: var(--t-sm); }
+.test-tools .field { margin-block-start: 0.75rem; }
+
+/* שלבי ההעלאה: קו מידה אנכי, כל שלב משנה מצב רק לפי תשובת השרת */
+.stages {
+  list-style: none;
+  padding: 0;
+  margin-block-start: 2rem;
+  max-inline-size: var(--measure);
+  border-inline-start: 1px solid var(--rule);
+}
+.stages li {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 1rem;
+  padding: 0.7rem 1rem;
+  position: relative;
+}
+.stages li::before {
+  content: "";
+  position: absolute;
+  inset-inline-start: -5px;
+  inset-block-start: 1.05rem;
+  inline-size: 9px;
+  block-size: 9px;
+  border-radius: 50%;
+  background: var(--surface);
+  border: 1px solid var(--rule);
+}
+.st-name { font-weight: 600; }
+.st-name small { font-weight: 400; color: var(--ink-soft); font-size: var(--t-sm); }
+.st { font-size: var(--t-sm); color: var(--ink-soft); white-space: nowrap; }
+
+.stages li[data-state="active"]::before { background: var(--steel); border-color: var(--steel); }
+.stages li[data-state="active"] .st { color: var(--steel); font-weight: 600; }
+.stages li[data-state="done"]::before { background: var(--ink); border-color: var(--ink); }
+.stages li[data-state="failed"]::before { background: var(--err); border-color: var(--err); }
+.stages li[data-state="failed"] .st { color: var(--err); font-weight: 600; }
+.stages li[data-state="skipped"] { color: var(--ink-soft); }
+.stages li[data-state="skipped"] .st-name { font-weight: 400; }
+
+.docs {
+  inline-size: 100%;
+  max-inline-size: var(--measure);
+  border-collapse: collapse;
+  margin-block: 1rem 1.5rem;
+  font-size: var(--t-sm);
+}
+.docs th {
+  text-align: start;
+  font-weight: 600;
+  color: var(--ink-soft);
+  border-block-end: 1px solid var(--rule);
+  padding: 0.5rem 0.4rem;
+}
+.docs td { padding: 0.6rem 0.4rem; border-block-end: 1px solid var(--rule-fade); }
+.docs td.mono { direction: ltr; text-align: right; }
+
+@media (max-width: 30rem) {
+  .docs th:nth-child(4), .docs td:nth-child(4) { display: none; }
+}
