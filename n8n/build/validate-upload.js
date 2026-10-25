@@ -20,5 +20,6 @@ if (!titles[docKey]) error = 'סוג מסמך לא מוכר. אפשר להעלו
 else if (!fileName && !text) error = 'לא התקבל קובץ.';
 else if (!/\.(md|txt)$/i.test(fileName)) error = 'אפשר להעלות רק קובצי md או txt.';
 else if (!text.trim()) error = 'הקובץ ריק.';
+else if (/[\uFFFD\u0000]/.test(text)) error = 'הקובץ לא בקידוד UTF-8. שמרו אותו מחדש כ-UTF-8 ונסו שוב.';
 else if (!['', 'processing', 'verifying'].includes(simulateFail)) error = 'ערך בדיקה לא מוכר.';
 return [{ json: { valid: !error, error, doc_key: docKey, doc_title: titles[docKey] || '', file_name: fileName, text, simulate_fail: simulateFail } }];

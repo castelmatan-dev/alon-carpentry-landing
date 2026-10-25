@@ -62,7 +62,7 @@ HTML ו-CSS בלבד — בלי ספריות, בלי כלי בנייה, בלי �
 | `admin.html`, `admin.css` | העלאת מחירון/תנאי הזמנה עם החלפה בטוחה. לא מקושר מהעמוד, `noindex`, סיסמה ב-`sessionStorage` בלבד |
 | `chat-widget.js`, `chat-widget.css` | בועת הצ'אט, נטענת מ-`index.html` |
 | `supabase/` | מיגרציות (`kb_versions`, `kb_chunks`, פונקציות ההחלפה) ובדיקות SQL |
-| `n8n/` | פונקציית החיתוך ובדיקותיה, מקורות קוד ה-SDK, וייצוא הזרימה |
+| `n8n/` | פונקציית החיתוך ובדיקותיה ומקורות קוד ה-SDK. ייצוא הזרימה המלא (JSON) מצורף להגשה ולא נשמר כאן |
 
 הזרימה ב-n8n: `נגריית אלון — העלאה ובוט` (`3wWegpnJEWe25AkU`). נקודות הקצה:
 
@@ -80,7 +80,7 @@ HTML ו-CSS בלבד — בלי ספריות, בלי כלי בנייה, בלי �
     python3 _review/type_audit.py           # עקביות הסולם הטיפוגרפי
     python3 _review/test_webhook_paths.py   # ארבעת מצבי ה-webhook מול שרת דמה
     python3 _review/test_validation_sync.py # הוולידציה זהה בדפדפן ובשרת
-    python3 _review/test_admin.py           # מסך האדמין מול שרת דמה (21)
+    python3 _review/test_admin.py           # מסך האדמין מול שרת דמה (22)
     python3 _review/test_chat.py            # בועת הצ'אט מול שרת דמה (19)
     node --test n8n/chunker.test.js         # החיתוך (6)
 
@@ -97,7 +97,7 @@ HTML ו-CSS בלבד — בלי ספריות, בלי כלי בנייה, בלי �
 origin מורשה, ובקשה אמיתית מהמחשב תיחסם. **בדיקה חיה מקצה לקצה נעשית
 מהדומיין החי בלבד.**
 
-`_review/` לא נכנס ל-git (צילומי מסך כבדים).
+`_review/` לא נכנס ל-git (צילומי מסך כבדים), ולכן בדיקות ה-Playwright רצות רק בעותק המקומי.
 
 ## פריסה
 

@@ -34,3 +34,4 @@ _review/
 
 # תצוגה מקדימה נוצרת מקומית מ-confirmation.html
 email/_preview/
+n8n/build/*.json
