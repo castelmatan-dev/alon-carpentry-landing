@@ -55,6 +55,24 @@ HTML ו-CSS בלבד — בלי ספריות, בלי כלי בנייה, בלי �
 `Access-Control-Allow-Origin`, והדפדפן משווה אותה מול ה-`Origin` ששלח —
 שכולל תמיד `https://`. ערך בלי סכימה לא יתאים, והבקשה תיחסם בשקט.
 
+## מטלה 11: בוט ומסך אדמין
+
+| קובץ | מה |
+|---|---|
+| `admin.html`, `admin.css` | העלאת מחירון/תנאי הזמנה עם החלפה בטוחה. לא מקושר מהעמוד, `noindex`, סיסמה ב-`sessionStorage` בלבד |
+| `chat-widget.js`, `chat-widget.css` | בועת הצ'אט, נטענת מ-`index.html` |
+| `supabase/` | מיגרציות (`kb_versions`, `kb_chunks`, פונקציות ההחלפה) ובדיקות SQL |
+| `n8n/` | פונקציית החיתוך ובדיקותיה, מקורות קוד ה-SDK, וייצוא הזרימה |
+
+הזרימה ב-n8n: `נגריית אלון — העלאה ובוט` (`3wWegpnJEWe25AkU`). נקודות הקצה:
+
+    POST /webhook/alon-kb/upload      Header Auth (X-Admin-Key)
+    GET  /webhook/alon-kb/status      Header Auth
+    GET  /webhook/alon-kb/documents   Header Auth
+    POST /webhook/cd2ec360-…/chat     ציבורי (הבוט)
+
+כולן עם `Allowed Origins` לדומיין החי בלבד. המפתחות הסודיים (Supabase service_role, OpenAI, OpenRouter, Cohere) חיים רק ב-credentials של n8n.
+
 ## בדיקות
 
     python3 -m http.server 8899
@@ -62,6 +80,9 @@ HTML ו-CSS בלבד — בלי ספריות, בלי כלי בנייה, בלי �
     python3 _review/type_audit.py           # עקביות הסולם הטיפוגרפי
     python3 _review/test_webhook_paths.py   # ארבעת מצבי ה-webhook מול שרת דמה
     python3 _review/test_validation_sync.py # הוולידציה זהה בדפדפן ובשרת
+    python3 _review/test_admin.py           # מסך האדמין מול שרת דמה (21)
+    python3 _review/test_chat.py            # בועת הצ'אט מול שרת דמה (19)
+    node --test n8n/chunker.test.js         # החיתוך (6)
 
 **הוולידציה חיה בשני מקומות** — `RULES` ב-`index.html` (נוחות למשתמש)
 ו-`prepare.js` (ההגנה האמיתית). פער ביניהם הוא כשל שקט: אם השרת מחמיר
